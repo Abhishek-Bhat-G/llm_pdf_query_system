@@ -106,21 +106,24 @@ def main():
     pdf_path = "input_docs/BAJHLIP23020V012223.pdf" 
     text = load_text_from_pdf(pdf_path)
 
-    
     chunks = chunk_text(text)
     index, _, chunk_store = build_faiss_index(chunks)
 
-    
     raw_query = "46-year-old male, knee surgery in Pune, 3-month-old insurance policy"
 
-   
     structured = extract_query_info(raw_query)
     print("\n[Structured Query]")
     print(json.dumps(structured, indent=2))
+    
     relevant = search_faiss(index, chunk_store, raw_query)
     decision = run_decision_engine(structured, relevant)
+
+    # ✅ Fixed output
     print("\n[Final Decision]")
-    print(json.dumps(decision, indent=2))
+    print(json.dumps(decision, indent=2, ensure_ascii=False))
+
+    print("\n[Summary Message]")
+    print(decision.get("summary"))
 
 
 if __name__ == "__main__":
